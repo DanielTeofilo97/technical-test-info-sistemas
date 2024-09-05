@@ -1,0 +1,10 @@
+apps:
+  - name: API-VEICULOS
+    script: './dist/main.js'
+    exec_interpreter: 'node@20.9.0'
+    instance_var: 'INSTANCE_ID'
+    max_memory_restart: 300M
+    exec_mode: 'fork'
+    instances: 1
+    env:
+      NODE_ENV: 'production'
