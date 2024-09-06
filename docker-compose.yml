@@ -2,14 +2,14 @@
 version: '3.8'
 
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
+  app:
+    build: .
     environment:
       - NODE_ENV=production
     ports:
       - "3049:3049"
+    volumes:
+      - .:/home/node/app
     depends_on:
       - db
     networks:
