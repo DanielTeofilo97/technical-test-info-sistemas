@@ -4,8 +4,6 @@ RUN apt-get update -y && apt-get install -y openssl
 
 WORKDIR  /home/node/app
 
-RUN chmod -R 777 /home/node/app
-
 USER node
 
 ENV NODE_ENV=production

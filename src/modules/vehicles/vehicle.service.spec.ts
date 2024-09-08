@@ -22,7 +22,7 @@ const fakeVehicles = [
     },
     {
         id: "3c627fa7-3f7f-4a8a-a8b8-23193f5593e9",
-        plate: "HEO3E24",
+        plate: "HEO3E29",
         chassis: "8AD3CN6BTBG035202",
         renavam: "52036153225",
         model: "607 Sedan 3.0 V6",
@@ -58,8 +58,9 @@ const fakeVehicles = [
 
 const prismaMock = {
     vehicle: {
-        create: jest.fn().mockReturnValue(fakeVehicles[0]),
+        create: jest.fn().mockReturnValue(fakeVehicles[1]),
         findUnique: jest.fn().mockResolvedValue(fakeVehicles[0]),
+        findFirst: jest.fn().mockResolvedValue(null),
         count: jest.fn().mockResolvedValue(fakeVehicles.length),
         findMany: jest.fn().mockResolvedValue(fakeVehicles),
         update: jest.fn().mockResolvedValue(fakeVehicles[0]),
@@ -124,24 +125,24 @@ describe('VehicleService', () => {
             });
         });
     });
-
     describe('create', () => {
-
         it(`should create a new vehicle`, async () => {
-            const response = await service.create({
-                "plate": "HRO3E24",
-                "chassis": "8AD3CN6BTBG035202",
-                "renavam": "52036153225",
-                "model": "607 Sedan 3.0 V6",
-                "brand": "Peugeot",
-                "year": 2024
-            }, '4df4d18e-89f8-4920-91ed-de84753029aa');
+            const newVehicleData = {
+                plate: "HRO3E29",
+                chassis: "8AD3CN6BTBG035202",
+                renavam: "52036153225",
+                model: "607 Sedan 3.0 V6",
+                brand: "Peugeot",
+                year: 2024
+            };
 
-            expect(response).toBe(fakeVehicles[0]);
+            const response = await service.create(newVehicleData, '4df4d18e-89f8-4920-91ed-de84753029aa');
+
+            expect(response).toEqual(fakeVehicles[1]); // Use `toEqual` para comparação profunda
             expect(prisma.vehicle.create).toHaveBeenCalledTimes(1);
             expect(prisma.vehicle.create).toHaveBeenCalledWith({
                 data: {
-                    plate: "HRO3E24",
+                    plate: "HRO3E29",
                     chassis: "8AD3CN6BTBG035202",
                     renavam: "52036153225",
                     model: "607 Sedan 3.0 V6",
@@ -156,8 +157,8 @@ describe('VehicleService', () => {
 
     describe('update', () => {
         it(`should update a vehicle`, async () => {
-            const response = await service.update('6faba3f4-0a98-4b51-85da-4017e7118bdd', fakeVehicles[0]);
-    
+            const response = await service.update('6faba3f4-0a98-4b51-85da-4017e7118bdd', fakeVehicles[0], '4df4d18e-89f8-4920-91ed-de84753029aa');
+
             expect(response).toEqual(fakeVehicles[0]);
             expect(prisma.vehicle.update).toHaveBeenCalledTimes(1);
             expect(prisma.vehicle.update).toHaveBeenCalledWith({
@@ -170,7 +171,7 @@ describe('VehicleService', () => {
                 },
             });
         });
-    
+
         it(`should return NotFoundException when no vehicle is found`, async () => {
             const unexistingPost = {
                 id: '6faba3f4-0a98-4b51-85da-4017e7118bd9',
@@ -181,15 +182,15 @@ describe('VehicleService', () => {
                 brand: "Peugeot",
                 year: 2024
             };
-    
+
             jest.spyOn(prisma.vehicle, 'update').mockRejectedValue(new Error());
-    
+
             try {
-                await service.update('6faba3f4-0a98-4b51-85da-4017e7118bd9', unexistingPost);
+                await service.update('6faba3f4-0a98-4b51-85da-4017e7118bd9', unexistingPost, '4df4d18e-89f8-4920-91ed-de84753029aa');
             } catch (error) {
                 expect(error).toEqual(new NotFoundException());
             }
-    
+
             expect(prisma.vehicle.update).toHaveBeenCalledWith({
                 where: { id: '6faba3f4-0a98-4b51-85da-4017e7118bd9' },
                 data: unexistingPost,

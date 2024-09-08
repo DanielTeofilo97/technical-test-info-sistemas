@@ -4,10 +4,8 @@ version: '3.8'
 services:
   app:
     build: .
-    user: node
-    command: /bin/sh -c "chown -R node:node /home/node/app && chmod -R 777 /home/node/app && tail -f /dev/null"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
     ports:
       - "3049:3049"
     volumes:

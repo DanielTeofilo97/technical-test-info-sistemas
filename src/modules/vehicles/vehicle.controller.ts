@@ -6,6 +6,8 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { RoleGuard } from 'src/guards/role.guard';
 import { UpdateVehicleDTO } from './dto/update-vehicle.dto';
 import { LoggerService } from 'src/utils/logger/logger.service';
+import { Roles } from 'src/decorators/role.decorator';
+import { Role } from 'src/enums/role.enum';
 
 @ApiBearerAuth()
 @ApiHeader({
@@ -93,7 +95,7 @@ export class VehicleController {
     }
   }
 
-
+  @UseGuards(AuthGuard, RoleGuard)
   @ApiOperation({ summary: 'Buscar Veículo pelo id' })
   @ApiResponse({ status: 200, description: 'Veículo encontrado.' })
   @ApiResponse({ status: 404, description: 'Veículo não encontrado.' })
@@ -104,7 +106,7 @@ export class VehicleController {
   }
 
 
-
+  @UseGuards(AuthGuard, RoleGuard)
   @ApiOperation({ summary: 'Atualizar Veículo pelo id' })
   @ApiResponse({ status: 200, description: 'Veículo atualizado.' })
   @ApiResponse({ status: 404, description: 'Veículo não encontrado.' })
@@ -113,13 +115,20 @@ export class VehicleController {
   async update(
     @Body() data: UpdateVehicleDTO,
     @Param('id', ParseUUIDPipe) id: string,
+    @Req() req
   ) {
-    return this.vehicleService.update(id, data);
+    return this.vehicleService.update(id, data, req.user.id);
   }
 
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RoleGuard)
   @ApiOperation({ summary: 'Desabilitar Veículo' })
   @ApiResponse({ status: 200, description: 'Veículo desabilitado.' })
   @ApiResponse({ status: 404, description: 'Veículo não encontrado.' })
+  @ApiResponse({
+    status: 403,
+    description: 'Usuario não tem acesso ao recurso',
+  })
   @ApiTags('vehicles')
   @Delete(':id')
   async delete(@Param('id', ParseUUIDPipe) id: string) {

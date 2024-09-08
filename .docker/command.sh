@@ -1,8 +1,12 @@
 #!/bin/bash
 
 npm install
-git config --global --add safe.directory /home/node/app
 sudo npm install -g @nestjs/cli
-npx prisma migrate dev
+npm rebuild bcrypt --build-from-source
+git config --global --add safe.directory /home/node/app
+npx prisma db push
 npx prisma db seed
+
+npm run start:dev
+
 tail -f /dev/null
