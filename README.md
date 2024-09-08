@@ -44,6 +44,8 @@ usuário para autenticação da api
 "cpf":"51103282000",
 "password":"12345678"
 
+Na pasta docs do projeto tem a collection da api exportada do postman
+
 ```
 
 ## Licença
