@@ -22,6 +22,7 @@ npm i
 npx prisma db push // criar tabelas
 npx prisma db seed // popular tabela de veículos e criar adm
 npm run start:dev
+```
 
 ## Teste
 
