@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  extensions = [uuidOssp(map: "uuid-ossp")]
+}
+
+model User {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name        String    @db.VarChar(127)
+  cpf         String    @db.VarChar(11)
+  role        Int?      @default(1) @db.Integer
+  password    String    @db.VarChar(127)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime  @updatedAt @default(now()) @db.Timestamptz(6)
+  
+  vehiclesCreated  Vehicle[] @relation("CreatedByUser")
+  vehiclesUpdated  Vehicle[] @relation("UpdatedByUser")
+
+  @@map("users")
+}
+
+model Vehicle {
+  id             String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  plate          String   @db.VarChar(7)
+  chassis        String   @db.VarChar(17)
+  renavam        String   @db.VarChar(11)
+  model          String   @db.VarChar(100)
+  brand          String   @db.VarChar(100)
+  year           Int      @db.Integer
+  createdAt      DateTime @default(now()) @db.Timestamptz(6)
+  idUserCreate   String?   @db.Uuid
+  updatedAt      DateTime @updatedAt @default(now()) @db.Timestamptz(6)
+  idUserUpdate   String?   @db.Uuid
+
+  createdBy      User?     @relation("CreatedByUser", fields: [idUserCreate], references: [id])
+  updatedBy      User?     @relation("UpdatedByUser", fields: [idUserUpdate], references: [id])
+
+  @@map("vehicles")
+}

@@ -2,7 +2,9 @@ FROM node:20-slim
 
 RUN apt-get update -y && apt-get install -y openssl
 
-WORKDIR /home/node/app
+WORKDIR  /home/node/app
+
+RUN chmod -R 777 /home/node/app
 
 USER node
 

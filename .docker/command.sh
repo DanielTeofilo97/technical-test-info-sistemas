@@ -1,5 +1,8 @@
 #!/bin/bash
 
 npm install
-#npx prisma migrate dev
+git config --global --add safe.directory /home/node/app
+sudo npm install -g @nestjs/cli
+npx prisma migrate dev
+npx prisma db seed
 tail -f /dev/null
