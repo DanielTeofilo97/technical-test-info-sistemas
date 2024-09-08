@@ -7,6 +7,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AppService } from './app.service';
 import { VehicleModule } from './modules/vehicles/vehicle.module';
 import { LoggerModule } from './utils/logger/logger.module';
+import { PostmanModule } from './modules/postman/postman.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { LoggerModule } from './utils/logger/logger.module';
     forwardRef(() => AuthModule),
     forwardRef(() => VehicleModule),
     LoggerModule,
+    PostmanModule,
   ],
   providers: [
     AppService,
