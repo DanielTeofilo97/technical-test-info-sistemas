@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UpdateVehicleDTO } from './dto/update-vehicle.dto';
-import { PatchVehicleDTO } from './dto/patch-vehicle.dto';
 import { CreateVehicleDTO } from './dto/create-vehicle.dto';
 
 
@@ -9,7 +8,7 @@ import { CreateVehicleDTO } from './dto/create-vehicle.dto';
 @Injectable()
 export class VehicleService {
 
-    constructor(private readonly prisma: PrismaService){}
+    constructor(private readonly prisma: PrismaService) { }
 
     async create(data: CreateVehicleDTO, user_id: string) {
         data.idUserCreate = user_id;
@@ -66,6 +65,7 @@ export class VehicleService {
                 chassis: true,
                 renavam: true,
                 model: true,
+                brand:true,
                 createdAt: true,
                 updatedAt: true,
                 year: true,
@@ -94,59 +94,55 @@ export class VehicleService {
 
 
     async update(id: string, data: UpdateVehicleDTO) {
-        await this.exists(id);
-        return this.prisma.vehicle.update({
-            data: data,
-            where: {
-                id,
-            },
-            select: {
-                id: true,
-            },
-        });
-    }
-
-    async updatePartial(id: string, data: PatchVehicleDTO) {
-        await this.exists(id);
-        return this.prisma.vehicle.update({
-            data: data,
-            where: {
-                id,
-            },
-            select: {
-                id: true,
-            },
-        });
-    }
-
-    async delete(id: string) {
-        await this.exists(id);
-
-        return this.prisma.vehicle.delete({
-            where: {
-                id,
-            },
-        });
-    }
-
-    async exists(id: string) {
-        if (
-            !(await this.prisma.vehicle.count({
+        try {
+            return await this.prisma.vehicle.update({
+                data: data,
                 where: {
                     id,
                 },
-            }))
-        ) {
-            throw new NotFoundException(`O Veiculo ${id} não existe.`);
+                select: {
+                    id: true,
+                },
+            });
+        } catch (error) {
+            throw new NotFoundException();
         }
     }
 
+
+    async delete(id: string) {
+        try {
+            await this.prisma.vehicle.delete({ where: { id } });
+        } catch (error) {
+            throw new NotFoundException();
+        }
+    }
+
+
     async listOne(id: string) {
-        await this.exists(id);
         return this.prisma.vehicle.findUnique({
-            where: {
-                id,
+            where: { id }, select: {
+                id: true,
+                plate: true,
+                chassis: true,
+                renavam: true,
+                model: true,
+                brand:true,
+                createdAt: true,
+                updatedAt: true,
+                year: true,
+                createdBy: {
+                    select: {
+                        name: true,
+                    },
+                },
+                updatedBy: {
+                    select: {
+                        name: true,
+                    },
+                },
             },
         });
+
     }
 }

@@ -1,10 +1,9 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseUUIDPipe, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseUUIDPipe, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { VehicleService } from './vehicle.service';
 import { ApiBearerAuth, ApiHeader, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateVehicleDTO } from './dto/create-vehicle.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { RoleGuard } from 'src/guards/role.guard';
-import { PatchVehicleDTO } from './dto/patch-vehicle.dto';
 import { UpdateVehicleDTO } from './dto/update-vehicle.dto';
 import { LoggerService } from 'src/utils/logger/logger.service';
 
@@ -116,18 +115,6 @@ export class VehicleController {
     @Param('id', ParseUUIDPipe) id: string,
   ) {
     return this.vehicleService.update(id, data);
-  }
-
-  @ApiOperation({ summary: 'Atualizar Veículo parcialmente  pelo id' })
-  @ApiResponse({ status: 200, description: 'Veículo atualizado.' })
-  @ApiResponse({ status: 404, description: 'Veículo não encontrado.' })
-  @ApiTags('vehicles')
-  @Patch(':id')
-  async updatePartial(
-    @Body() data: PatchVehicleDTO,
-    @Param('id', ParseUUIDPipe) id: string,
-  ) {
-    return this.vehicleService.updatePartial(id, data);
   }
 
   @ApiOperation({ summary: 'Desabilitar Veículo' })
